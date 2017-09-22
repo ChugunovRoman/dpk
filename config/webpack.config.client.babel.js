@@ -1,4 +1,8 @@
-global.Promise = require('bluebird');
+import { client } from 'universal-webpack/config';
+import settings from './universal-webpack-settings';
+import config from './webpack.config';
+
+export default client(config, settings);
 
 var webpack = require('webpack');
 var path = require('path');
@@ -107,6 +111,9 @@ module.exports = {
     devServer: {
         hot: true,
         inline: true,
+        host: '127.0.0.1',
+        // host: '0.0.0.0',
+        // host: '192.168.2.220',
         port: 8050,
         historyApiFallback: true,
         compress: true,

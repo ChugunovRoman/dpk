@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 
 import { LinkContainer } from 'react-router-bootstrap';

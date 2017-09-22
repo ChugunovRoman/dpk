@@ -2,6 +2,7 @@
 
 import express from 'express';
 import React from 'react';
+import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
 import { StaticRouter, RouterContext } from 'react-router'
 

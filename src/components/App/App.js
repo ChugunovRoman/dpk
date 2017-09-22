@@ -1,5 +1,3 @@
-'use strict';
-
 import React from 'react';
 
 import Grid from 'react-bootstrap/lib/Grid';
