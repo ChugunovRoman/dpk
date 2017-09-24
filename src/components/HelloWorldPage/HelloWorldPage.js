@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+// import withStyles from 'isomorphic-style-loader/lib/withStyles';
 
-// import './HelloWorldPage.sass';
+// if (__CLIENT__) {
+
+// }
+
+import './HelloWorldPage.sass';
+
 
 const propTypes = {
     initialName: PropTypes.string
@@ -68,3 +74,4 @@ App.propTypes = propTypes;
 App.defaultProps = defaultProps;
 
 export default App;
+// export default withStyles(style)(App);

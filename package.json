@@ -9,11 +9,13 @@
     "build:watch": "webpack --watch",
     "nodemon": "NODE_PATH=./src nodemon server.babel.js --exec babel-node --presets es2015,stage-0,stage-3",
     "webpack-dev": "webpack-dev-server --watch --progress --debug --hot --devtool eval-source-map --output-pathinfo --colors --config ./config/webpack.config.js --inline --content-base public",
-    "dev": "better-npm-run development-build-server development-build-client development-prepare-server-build development-server-delayed",
+    "dev": "run-p development-build-server development-build-client development-prepare-server-build development-server-delayed",
     "development-prepare-server-build": "universal-webpack --settings ./config/universal-webpack-settings.js prepare",
     "development-build-client": "babel-node ./config/webpack-dev-server.js",
     "development-build-server": "better-npm-run development-build-server",
-    "development-server-delayed": "run-s delay development-server"
+    "development-server-delayed": "run-s delay development-server",
+    "development-server": "better-npm-run development-server",
+    "delay": "node ./src/core/sleep 10000"
   },
   "betterScripts": {
     "development-build-server": {
@@ -26,13 +28,13 @@
       "env": {
         "NODE_PATH": "es6"
       },
-      "command": "nodemon ./src/core/server/start.js --watch ./webroot/build/client"
+      "command": "nodemon ./start.js --watch ./public/assets"
     },
     "production-server": {
       "env": {
         "NODE_PATH": "./src"
       },
-      "command": "node ./src/core/server/start.js"
+      "command": "node ./start.js"
     }
   },
   "babel": {
@@ -50,6 +52,8 @@
     "react",
     "dpk",
     "isomorphic",
+    "universal",
+    "express",
     "MySQl"
   ],
   "author": "Chugunov Roman <Zebs-BMK@yandex.ru> (https://github.com/ChugunovRoman)",
@@ -92,10 +96,12 @@
     "file-loader": "^0.11.2",
     "happypack": "^4.0.0",
     "html-loader": "^0.5.1",
+    "isomorphic-style-loader": "^4.0.0",
     "json-loader": "^0.5.7",
     "loader-utils": "^1.1.0",
     "node-sass": "^4.5.3",
     "nodemon": "^1.12.0",
+    "npm-run-all": "^4.1.1",
     "postcss-loader": "^2.0.6",
     "react-hot-loader": "^1.3.1",
     "sass": "^1.0.0-beta.2",

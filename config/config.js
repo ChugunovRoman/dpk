@@ -11,7 +11,7 @@ export default {
     // Setting up for the dev server
     devServer: {
         host: '127.0.0.1',
-        port: 3001
+        port: 8050
     },
     
     // Setting up for the db

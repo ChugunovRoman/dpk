@@ -2,7 +2,7 @@ import path from 'path';
 import webpack from 'webpack';
 import HappyPack from 'happypack';
 
-import {regularExpressions} from './webpack.config';
+// import {regularExpressions} from './webpack.config';
 import baseConfig from './webpack.config.client';
 
 const appConfig = require('./config');
@@ -16,6 +16,7 @@ config.plugins.push(
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('development'),
         'process.env.BABEL_ENV': JSON.stringify('es6'),
+        'process.env.BROWSER': JSON.stringify(1),
 
         __CLIENT__: true,
         __SERVER__: false,
@@ -51,7 +52,7 @@ config.output.publicPath = `http://${devServerHost}:${devServerPort}${config.out
 // Add React Hot Module Replacement plugin to `babel-loader`
 
 const jsLoader = config.module.rules.find(
-    loader => loader.test.toString() === regularExpressions.javascript.toString()
+    loader => loader.test.toString() === /\.jsx?$/.toString()
 );
 
 jsLoader.use[0].options = {
@@ -74,7 +75,7 @@ jsLoader.use[0].options = {
 jsLoader.use.push({
     loader: 'eslint-loader',
     options: {
-        configFile: path.resolve(__dirname, '../.eslintrc'),
+        configFile: path.resolve(__dirname, '../.eslintrc.json'),
         quiet: true,
         emitError: true,
         failOnError: true
@@ -87,9 +88,5 @@ jsLoader.use.unshift({
         id: 'js'
     }
 });
-
-// jsLoader.happy = {
-//     id: 'js'
-// };
 
 export default config;

@@ -8,9 +8,7 @@ import webpack from 'webpack';
 
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
-
-// const clientConfig = require('./webpack.config.client.babel');
-// const serverConfig = require('./webpack.config.server.babel');
+import appConfig from './config';
 
 // project folder
 const rootFolder = path.resolve(__dirname, '..');
@@ -21,51 +19,21 @@ export const regularExpressions = {
     sass: /\.sass$/,
     css: /\.css$/
 };
-var cssName = process.env.NODE_ENV === 'production'
-    ? 'styles-[hash].css'
-    : 'styles.css';
-var jsName = process.env.NODE_ENV === 'production'
-    ? 'bundle-[hash].js'
-    : 'bundle.js';
-
-var publicPath = 'http://localhost:8050/public/assets';
-
-var plugins = [
-    new webpack.DefinePlugin({
-        'process.env': {
-            BROWSER: JSON.stringify(true),
-            NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
-        }
-    }),
-    new ExtractTextPlugin(cssName)
-];
-
-if (process.env.NODE_ENV === 'production') {
-    plugins.push(new CleanWebpackPlugin(['public/assets/'], {
-        root: __dirname,
-        verbose: true,
-        dry: false
-    }));
-    plugins.push(new webpack.optimize.DedupePlugin());
-    plugins.push(new webpack.optimize.OccurrenceOrderPlugin());
-    plugins.push(new webpack.optimize.CommonsChunkPlugin({
-        name: 'common'
-    }));
-}
 
 const assetsPath = path.resolve(rootFolder, 'webroot', 'build', 'client');
 
 module.exports = {
-    context: path.join(__dirname, 'src'),
+    context: `${rootFolder}/src`,
     entry: {
-        main: path.join(__dirname, 'src/client.js')
+        main: `${rootFolder}/src/client.js`
+        // main: path.join(__dirname, '../src/client.js')
     },
     output: {
         // filesystem path for static files
-        path: path.join(__dirname, 'public/assets/'),
+        path: `${rootFolder}/public/assets/`,
 
         // network path for static files
-        publicPath,
+        publicPath: `/public/assets`,
 
         // file name pattern for entry scripts
         filename: '[name].[hash].js',
@@ -78,53 +46,67 @@ module.exports = {
         rules: [
             {
                 test: regularExpressions.css,
-                // loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader'),
                 use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
+                    fallback: 'isomorphic-style-loader',
+                    // fallback: 'style-loader',
                     use: [
                         {
-                            loader: "css-loader",
+                            loader: 'css-loader',
                             options: {
                                 modules: true,
                                 sourceMap: true,
-                                importLoaders: 1,
+                                // importLoaders: 1,
                                 localIdentName: '[name]__[local]___[hash:base64:5]'
                             }
 
                         }
+                        // {
+                        //     loader: 'postcss-loader',
+                        //     options: {
+                        //         parser: 'sugarss',
+                        //         exec: true,
+                        //         config: {
+                        //             ctx: {
+                        //                 autoprefixer: true
+                        //             }
+                        //         }
+                        //     }
+                        // }
                     ]
                 })
             },
             {
                 test: regularExpressions.sass,
                 use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
+                    // fallback: 'style-loader',
+                    fallback: 'isomorphic-style-loader',
                     use: [
                         {
-                            loader: "css-loader",
+                            loader: 'css-loader',
                             options: {
                                 minimize: true,
                                 modules: true,  
                                 sourceMap: true,
                                 sourceMapContents: true,
-                                importLoaders: 2,
+                                importLoaders: 1,
                                 localIdentName: '[name]__[local]___[hash:base64:5]'
                             }
                         },
+                        // {
+                        //     loader: 'postcss-loader',
+                        //     options: {
+                        //         parser: 'sugarss',
+                        //         exec: true,
+                        //         importLoaders: 1,
+                        //         config: {
+                        //             ctx: {
+                        //                 autoprefixer: true
+                        //             }
+                        //         }
+                        //     }
+                        // },
                         {
-                            loader: "postcss-loader",
-                            options: {
-                                parser: 'sugarss',
-                                exec: true,
-                                // config: {
-                                //     ctx: {
-                                //         autoprefixer: {}
-                                //     }
-                                // }
-                            }
-                        },
-                        {
-                            loader: "sass-loader"
+                            loader: 'sass-loader'
                         }
                     ]
                 }),
@@ -168,8 +150,10 @@ module.exports = {
     },
 
     resolve: {
+        extensions: ['.js', '.jsx', '.scss', '.css'],
+
         modules: [
-            path.resolve(__dirname, '..', 'src'),
+            // path.resolve(__dirname, '..', 'src'),
             path.resolve('node_modules')
         ],
         alias: {
@@ -185,7 +169,16 @@ module.exports = {
         }
     },
 
-    plugins
+    plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                BROWSER: JSON.stringify(true),
+                NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+            }
+        }),
+
+        new ExtractTextPlugin('[name].[hash].css')
+    ]
 };
 
 // module.exports = [

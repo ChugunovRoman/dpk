@@ -2,7 +2,7 @@ import webpack from 'webpack';
 import baseConfig from './webpack.config.server';
 
 import appConfig from './config';
-import regularExpressions from './webpack.config';
+// import regularExpressions from './webpack.config';
 
 const config = Object.assign({}, baseConfig);
 
@@ -15,7 +15,7 @@ config.output.publicPath = `http://${devServerHost}:${devServerPort}${publicPath
 config.devtool = 'inline-source-map';
 
 config.module.rules.push({
-    test: regularExpressions.javascript,
+    test: /\.jsx?$/,
     use: [
         {
             loader: 'react-hot-loader' 
@@ -42,6 +42,7 @@ config.plugins = config.plugins.concat(
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production'),
         'process.env.BABEL_ENV': JSON.stringify('es6'),
+        'process.env.BROWSER': JSON.stringify(0),
 
         __CLIENT__: false,
         __SERVER__: true,
