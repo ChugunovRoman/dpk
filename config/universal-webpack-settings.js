@@ -1,6 +1,8 @@
+import path from 'path';
+
 module.exports = {
     server: {
-        input: './src/core/server/entry.js',
-        output: './webroot/build/server/server.js'
+        input: path.resolve('./server.babel.js'),
+        output: path.resolve('./server.js')
     }
 };

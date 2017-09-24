@@ -6,7 +6,7 @@ import Header from './../Header';
 import Routes from './../Routes';
 import Footer from './../Footer';
 
-import './bootstrap.css';
+// import './bootstrap.css';
 
 const App = () => (
     <div>

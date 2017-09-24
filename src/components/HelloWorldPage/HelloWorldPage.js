@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import './HelloWorldPage.sass';
+// import './HelloWorldPage.sass';
 
 const propTypes = {
     initialName: PropTypes.string

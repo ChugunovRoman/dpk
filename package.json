@@ -9,7 +9,31 @@
     "build:watch": "webpack --watch",
     "nodemon": "NODE_PATH=./src nodemon server.babel.js --exec babel-node --presets es2015,stage-0,stage-3",
     "webpack-dev": "webpack-dev-server --watch --progress --debug --hot --devtool eval-source-map --output-pathinfo --colors --config ./config/webpack.config.js --inline --content-base public",
-    "dev": "./dev.js"
+    "dev": "better-npm-run development-build-server development-build-client development-prepare-server-build development-server-delayed",
+    "development-prepare-server-build": "universal-webpack --settings ./config/universal-webpack-settings.js prepare",
+    "development-build-client": "babel-node ./config/webpack-dev-server.js",
+    "development-build-server": "better-npm-run development-build-server",
+    "development-server-delayed": "run-s delay development-server"
+  },
+  "betterScripts": {
+    "development-build-server": {
+      "env": {
+        "NODE_PATH": "./src"
+      },
+      "command": "webpack --config ./config/webpack.config.server.development.babel.js --watch --colors --display-error-details"
+    },
+    "development-server": {
+      "env": {
+        "NODE_PATH": "es6"
+      },
+      "command": "nodemon ./src/core/server/start.js --watch ./webroot/build/client"
+    },
+    "production-server": {
+      "env": {
+        "NODE_PATH": "./src"
+      },
+      "command": "node ./src/core/server/start.js"
+    }
   },
   "babel": {
     "presets": [
@@ -58,6 +82,7 @@
     "babel-cli": "^6.26.0",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.1.2",
+    "better-npm-run": "^0.1.0",
     "clean-webpack-plugin": "^0.1.16",
     "css-loader": "^0.28.7",
     "eslint": "^4.6.1",

@@ -1,11 +1,13 @@
 global.Promise = require('bluebird');
 
-require('dotenv').config();
+// require('dotenv').config();
 
-var webpack = require('webpack');
-var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var CleanWebpackPlugin = require('clean-webpack-plugin');
+import path from 'path';
+import autoprefixer from 'autoprefixer';
+import webpack from 'webpack';
+
+import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import CleanWebpackPlugin from 'clean-webpack-plugin';
 
 // const clientConfig = require('./webpack.config.client.babel');
 // const serverConfig = require('./webpack.config.server.babel');
@@ -16,10 +18,15 @@ const rootFolder = path.resolve(__dirname, '..');
 // regular expressions for module.loaders
 export const regularExpressions = {
     javascript: /\.jsx?$/,
-    stylus: /\.styl$/,
-    css: /\.css$/,
-    sass: /\.sass$/
+    sass: /\.sass$/,
+    css: /\.css$/
 };
+var cssName = process.env.NODE_ENV === 'production'
+    ? 'styles-[hash].css'
+    : 'styles.css';
+var jsName = process.env.NODE_ENV === 'production'
+    ? 'bundle-[hash].js'
+    : 'bundle.js';
 
 var publicPath = 'http://localhost:8050/public/assets';
 
@@ -68,7 +75,7 @@ module.exports = {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: regularExpressions.css,
                 // loader: ExtractTextPlugin.extract('style-loader', 'css-loader!postcss-loader'),
@@ -99,8 +106,21 @@ module.exports = {
                                 minimize: true,
                                 modules: true,  
                                 sourceMap: true,
-                                importLoaders: 1,
+                                sourceMapContents: true,
+                                importLoaders: 2,
                                 localIdentName: '[name]__[local]___[hash:base64:5]'
+                            }
+                        },
+                        {
+                            loader: "postcss-loader",
+                            options: {
+                                parser: 'sugarss',
+                                exec: true,
+                                // config: {
+                                //     ctx: {
+                                //         autoprefixer: {}
+                                //     }
+                                // }
                             }
                         },
                         {
@@ -128,13 +148,6 @@ module.exports = {
             {
                 test: /\.(woff|woff2|ttf|eot)/,
                 loader: 'url-loader?limit=1'
-            },
-            {
-                test: regularExpressions.javascript,
-                loader: process.env.NODE_ENV !== 'production'
-                    ? 'react-hot-loader!babel-loader?presets[]=react,presets[]=es2015,presets[]=stage-3!eslint-loader'
-                    : 'babel-loader',
-                exclude: [/node_modules/, /public/]
             },
             {
                 test: /\.json$/,
@@ -171,6 +184,8 @@ module.exports = {
             // localization: path.resolve(__dirname, '../src/localization')
         }
     },
+
+    plugins
 };
 
 // module.exports = [

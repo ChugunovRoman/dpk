@@ -2,41 +2,17 @@
 
 import express from 'express';
 import React from 'react';
-import { Provider } from 'react-redux';
+// import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
-import { StaticRouter, RouterContext } from 'react-router'
+import { StaticRouter } from 'react-router';
+// import { StaticRouter, RouterContext } from 'react-router'
 
 import App from './components/App';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use((req, res) => {
-    const context = {};
-
-    const html = renderToString(
-        <StaticRouter location={req.url} context={context}>
-            <App />
-        </StaticRouter>
-    );
-
-    if(context.url) {
-        console.log(context);
-        res.writeHead(301, {
-            location: context.url
-        });
-        res.end();
-    } else {
-        res.status(200).send(renderHTML(html));
-    }
-
-});
-
-const assetUrl = process.env.NODE_ENV !== 'production'
-    ? 'http://localhost:8050'
-    : '/';
-
-function renderHTML(componentHTML) {
+const renderHTML = (componentHTML) => {
     return `
     <!DOCTYPE html>
       <html>
@@ -52,7 +28,32 @@ function renderHTML(componentHTML) {
       </body>
     </html>
   `;
-}
+};
+
+app.use((req, res) => {
+    const context = {};
+
+    const html = renderToString(
+        <StaticRouter location={req.url} context={context}>
+            <App />
+        </StaticRouter>
+    );
+
+    if (context.url) {
+        console.log(context);
+        res.writeHead(301, {
+            location: context.url
+        });
+        res.end();
+    } else {
+        res.status(200).send(renderHTML(html));
+    }
+});
+
+const assetUrl = process.env.NODE_ENV !== 'production'
+    ? 'http://localhost:8050'
+    : '/';
+
 
 app.listen(PORT, () => {
     console.log(`Server is listening on: ${PORT}`);

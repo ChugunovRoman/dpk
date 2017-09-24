@@ -1,7 +1,8 @@
 import webpack from 'webpack';
 import baseConfig from './webpack.config.server';
 
-const appConfig = require('./config');
+import appConfig from './config';
+import regularExpressions from './webpack.config';
 
 const config = Object.assign({}, baseConfig);
 
@@ -12,6 +13,30 @@ const publicPath = config.output.publicPath;
 config.output.publicPath = `http://${devServerHost}:${devServerPort}${publicPath}`;
 
 config.devtool = 'inline-source-map';
+
+config.module.rules.push({
+    test: regularExpressions.javascript,
+    use: [
+        {
+            loader: 'react-hot-loader' 
+        },
+        {
+            loader: 'babel-loader',
+            options: {
+                presets: [
+                    'react',
+                    'es2015',
+                    'stage-3',
+                    'stage-0'
+                ]
+            }
+        },
+        {
+            loader: 'eslint-loader'
+        }
+    ],
+    exclude: [/node_modules/, /public/]
+});
 
 config.plugins = config.plugins.concat(
     new webpack.DefinePlugin({

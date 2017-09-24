@@ -1,7 +1,27 @@
 import webpack from 'webpack';
 import baseConfig from './webpack.config.server';
 
+import regularExpressions from './webpack.config';
+
 const config = Object.assign({}, baseConfig);
+
+config.module.rules.push({
+    test: regularExpressions.javascript,
+    use: [
+        {
+            loader: 'babel-loader',
+            options: {
+                presets: [
+                    'react',
+                    'es2015',
+                    'stage-3',
+                    'stage-0'
+                ]
+            }
+        }
+    ],
+    exclude: [/node_modules/, /public/]
+});
 
 config.plugins = config.plugins.concat(
     new webpack.DefinePlugin({
