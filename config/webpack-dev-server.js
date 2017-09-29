@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import config from './webpack.config.client.development';
 
-const appConfig = require('./config');
+import appConfig from './config';
 
 const WebpackDevServer = require('webpack-dev-server');
 

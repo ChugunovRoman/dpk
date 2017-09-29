@@ -1,7 +1,7 @@
 import webpack from 'webpack';
 import baseConfig from './webpack.config.server';
 
-import regularExpressions from './webpack.config';
+import { regularExpressions } from './webpack.config';
 
 const config = Object.assign({}, baseConfig);
 

@@ -4,7 +4,7 @@ export default {
 
     // Setting up for the production server
     server: {
-        host: 'localhost',
+        host: '127.0.0.1',
         port: 3000
     },
     

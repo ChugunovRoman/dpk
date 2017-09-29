@@ -2,7 +2,7 @@ import webpack from 'webpack';
 import baseConfig from './webpack.config.server';
 
 import appConfig from './config';
-// import regularExpressions from './webpack.config';
+import { regularExpressions } from './webpack.config';
 
 const config = Object.assign({}, baseConfig);
 
@@ -15,7 +15,7 @@ config.output.publicPath = `http://${devServerHost}:${devServerPort}${publicPath
 config.devtool = 'inline-source-map';
 
 config.module.rules.push({
-    test: /\.jsx?$/,
+    test: regularExpressions.javascript,
     use: [
         {
             loader: 'react-hot-loader' 
@@ -50,6 +50,17 @@ config.plugins = config.plugins.concat(
         __DEVELOPMENT__: true,
         __DEVTOOLS__: false
     }),
+    new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false
+        }
+    }),
+
+    new webpack.optimize.CommonsChunkPlugin({
+        name: 'common'
+    }),
+
+    new webpack.optimize.OccurrenceOrderPlugin()
     // new webpack.optimize.CommonsChunkPlugin({
     //     names: ['global', 'vendor'],
     //     children: true,

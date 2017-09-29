@@ -22,7 +22,7 @@ export const regularExpressions = {
 
 const assetsPath = path.resolve(rootFolder, 'webroot', 'build', 'client');
 
-module.exports = {
+const config = {
     context: `${rootFolder}/src`,
     entry: {
         main: `${rootFolder}/src/client.js`
@@ -150,7 +150,7 @@ module.exports = {
     },
 
     resolve: {
-        extensions: ['.js', '.jsx', '.scss', '.css'],
+        extensions: ['.js', '.jsx', '.sass', '.css'],
 
         modules: [
             // path.resolve(__dirname, '..', 'src'),
@@ -181,7 +181,4 @@ module.exports = {
     ]
 };
 
-// module.exports = [
-//     clientConfig,
-//     serverConfig
-// ];
+export default config;

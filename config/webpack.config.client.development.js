@@ -2,14 +2,61 @@ import path from 'path';
 import webpack from 'webpack';
 import HappyPack from 'happypack';
 
-// import {regularExpressions} from './webpack.config';
 import baseConfig from './webpack.config.client';
+import { regularExpressions } from './webpack.config';
 
-const appConfig = require('./config');
+import appConfig from './config';
 
 const config = baseConfig({ development: true, css_bundle: true });
 
 config.devtool = 'inline-source-map';
+
+config.module.rules.push({
+    test: regularExpressions.javascript,
+    use: [
+        {
+            loader: 'happypack/loader',
+            options: {
+                id: 'js'
+            }
+        },
+        {
+            loader: 'babel-loader',
+            options: {
+                presets: [
+                    'react',
+                    'es2015',
+                    'stage-3',
+                    'stage-0'
+                ],
+                plugins: [
+                    [
+                        'react-transform',
+                        {
+                            transforms:
+                            [
+                                {
+                                    transform: 'react-transform-catch-errors',
+                                    imports: ['react']
+                                }
+                            ]
+                        }
+                    ]
+                ]
+            }
+        },
+        {
+            loader: 'eslint-loader',
+            options: {
+                configFile: path.resolve(__dirname, '../.eslintrc.json'),
+                quiet: true,
+                emitError: true,
+                failOnError: true
+            }
+        }
+    ],
+    exclude: [/node_modules/, /public/]
+});
 
 config.plugins.push(
     // environment variables
@@ -37,9 +84,9 @@ const host = `http://${appConfig.devServer.host}:${appConfig.devServer.port}`;
 
 // enable webpack development server
 config.entry.main = [
-    'react-hot-loader/patch',
+    // 'react-hot-loader/patch',
     `webpack-dev-server/client?${host}`,
-    'webpack/hot/only-dev-server',
+    // 'webpack/hot/only-dev-server',
     config.entry.main
 ];
 
@@ -52,41 +99,25 @@ config.output.publicPath = `http://${devServerHost}:${devServerPort}${config.out
 // Add React Hot Module Replacement plugin to `babel-loader`
 
 const jsLoader = config.module.rules.find(
-    loader => loader.test.toString() === /\.jsx?$/.toString()
+    loader => loader.test.toString() === regularExpressions.javascript.toString()
 );
 
-jsLoader.use[0].options = {
-    plugins: [
-        [
-            'react-transform',
-            {
-                transforms:
-                [
-                    {
-                        transform: 'react-transform-catch-errors',
-                        imports: ['react']
-                    }
-                ]
-            }
-        ]
-    ]
-};
+// jsLoader.use[0].options = {
+//     plugins: [
+//         [
+//             'react-transform',
+//             {
+//                 transforms:
+//                 [
+//                     {
+//                         transform: 'react-transform-catch-errors',
+//                         imports: ['react']
+//                     }
+//                 ]
+//             }
+//         ]
+//     ]
+// };
 
-jsLoader.use.push({
-    loader: 'eslint-loader',
-    options: {
-        configFile: path.resolve(__dirname, '../.eslintrc.json'),
-        quiet: true,
-        emitError: true,
-        failOnError: true
-    }
-});
-
-jsLoader.use.unshift({
-    loader: 'happypack/loader',
-    options: {
-        id: 'js'
-    }
-});
 
 export default config;
