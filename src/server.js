@@ -2,59 +2,76 @@
 
 import express from 'express';
 import React from 'react';
-// import { Provider } from 'react-redux';
 import { renderToString } from 'react-dom/server';
+// import { Provider } from 'react-redux';
 import { StaticRouter } from 'react-router';
 // import { StaticRouter, RouterContext } from 'react-router'
+// import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
+// import createHistory from 'react-router/lib/createMemoryHistory';
 
+import http from 'http';
+import path from 'path';
+
+import appConfig from '../config/config';
+import Html from './html';
 import App from './components/App';
 
-const app = express();
-const PORT = process.env.PORT || 3001;
+export default function (parameters) {
+    const app = express();
 
-const renderHTML = (componentHTML) => {
-    return `
-    <!DOCTYPE html>
-      <html>
-      <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Hello React</title>
-          <link rel="stylesheet" href="${assetUrl}/public/assets/styles.css">
-      </head>
-      <body>
-        <div id="app">${componentHTML}</div>
-        <script type="application/javascript" src="${assetUrl}/public/assets/bundle.js"></script>
-      </body>
-    </html>
-  `;
-};
+    app.use('/', express.static(path.join(__dirname, 'public/assets/')));
 
-app.use((req, res) => {
-    const context = {};
+    const server = new http.Server(app);
+    const chunks = parameters.chunks();
 
-    const html = renderToString(
-        <StaticRouter location={req.url} context={context}>
-            <App />
-        </StaticRouter>
-    );
+    app.use((req, res) => {
+        const context = {};
+        // const history = createHistory(req.originalUrl);
+        // const hydrateOnClient = () => {
+        //     res.send(
+        //         `<!doctype html>\n${renderToString(<Html assets={chunks} />)}`
+        //     );
+        // };
 
-    if (context.url) {
-        console.log(context);
-        res.writeHead(301, {
-            location: context.url
-        });
-        res.end();
-    } else {
-        res.status(200).send(renderHTML(html));
-    }
-});
+        global._env = {};
 
-const assetUrl = process.env.NODE_ENV !== 'production'
-    ? 'http://localhost:8050'
-    : '/';
+        // if (configuration.disable_ssr) {
+        //     hydrateOnClient();
+        //     return;
+        // }
+        const component = (
+            <StaticRouter location={req.url} context={context}>
+                <App />
+            </StaticRouter>
+        );
 
+        // console.log('chunks: ', chunks);
 
-app.listen(PORT, () => {
-    console.log(`Server is listening on: ${PORT}`);
-});
+        const html = renderToString(
+            <Html
+                assets={chunks}
+                component={component}
+                store={0}
+                context={context}
+            />
+        );
+
+        if (context.url) {
+            console.log('context: ', context);
+            res.writeHead(301, {
+                location: context.url
+            });
+            res.end();
+        } else {
+            res.status(200).send(`<!doctype html>\n${ html }`);
+        }
+    });
+    server.listen(appConfig.server.port, (err) => {
+        if (err) {
+            console.error('server error: ', err);
+            throw err;
+        }
+
+        console.log(`Server is listening on: ${appConfig.server.port}`);
+    });
+}

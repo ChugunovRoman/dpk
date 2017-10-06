@@ -25,15 +25,15 @@ const assetsPath = path.resolve(rootFolder, 'webroot', 'build', 'client');
 const config = {
     context: `${rootFolder}/src`,
     entry: {
-        main: `${rootFolder}/src/client.js`
+        client: path.join(rootFolder, '/src/client.js')
         // main: path.join(__dirname, '../src/client.js')
     },
     output: {
         // filesystem path for static files
-        path: `${rootFolder}/public/assets/`,
+        path: path.join(rootFolder, '/public/assets/'),
 
         // network path for static files
-        publicPath: `/public/assets`,
+        publicPath: `/public/assets/`,
 
         // file name pattern for entry scripts
         filename: '[name].[hash].js',
@@ -45,9 +45,18 @@ const config = {
     module: {
         rules: [
             {
+                test: regularExpressions.javascript,
+                exclude: /node_modules/,
+                use: [
+                    {
+                        loader: 'babel-loader'
+                    }
+                ],
+            },
+            {
                 test: regularExpressions.css,
                 use: ExtractTextPlugin.extract({
-                    fallback: 'isomorphic-style-loader',
+                    fallback: 'style-loader',
                     // fallback: 'style-loader',
                     use: [
                         {
@@ -56,19 +65,22 @@ const config = {
                                 modules: true,
                                 sourceMap: true,
                                 // importLoaders: 1,
-                                localIdentName: '[name]__[local]___[hash:base64:5]'
+                                localIdentName: '[local]'
+                                // localIdentName: '[name]__[local]___[hash:base64:5]'
                             }
-
-                        }
+        
+                        },
                         // {
                         //     loader: 'postcss-loader',
                         //     options: {
                         //         parser: 'sugarss',
                         //         exec: true,
-                        //         config: {
-                        //             ctx: {
-                        //                 autoprefixer: true
-                        //             }
+                        //         importLoaders: 1,
+                        //         plugins: {
+                        //             'postcss-import': {},
+                        //             'postcss-cssnext': {},
+                        //             'autoprefixer': {},
+                        //             'cssnano': {}
                         //         }
                         //     }
                         // }
@@ -79,7 +91,7 @@ const config = {
                 test: regularExpressions.sass,
                 use: ExtractTextPlugin.extract({
                     // fallback: 'style-loader',
-                    fallback: 'isomorphic-style-loader',
+                    fallback: 'style-loader',
                     use: [
                         {
                             loader: 'css-loader',
@@ -89,7 +101,8 @@ const config = {
                                 sourceMap: true,
                                 sourceMapContents: true,
                                 importLoaders: 1,
-                                localIdentName: '[name]__[local]___[hash:base64:5]'
+                                localIdentName: '[local]'
+                                // localIdentName: '[name]__[local]___[hash:base64:5]'
                             }
                         },
                         // {
@@ -98,10 +111,10 @@ const config = {
                         //         parser: 'sugarss',
                         //         exec: true,
                         //         importLoaders: 1,
-                        //         config: {
-                        //             ctx: {
-                        //                 autoprefixer: true
-                        //             }
+                        //         plugins: {
+                        //             'postcss-import': {},
+                        //             'autoprefixer': {},
+                        //             'cssnano': {}
                         //         }
                         //     }
                         // },
@@ -170,14 +183,14 @@ const config = {
     },
 
     plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                BROWSER: JSON.stringify(true),
-                NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
-            }
-        }),
+        // new webpack.DefinePlugin({
+        //     'process.env': {
+        //         BROWSER: JSON.stringify(true),
+        //         NODE_ENV: JSON.stringify(process.env.NODE_ENV || 'development')
+        //     }
+        // }),
 
-        new ExtractTextPlugin('[name].[hash].css')
+        new ExtractTextPlugin('[name].css')
     ]
 };
 

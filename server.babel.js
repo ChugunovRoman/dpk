@@ -1,9 +1,11 @@
 'use strict';
 
-import 'babel-core';
-require('babel-register')({
-    ignore: /\.sass/
-});
+// import 'babel-core';
+require('dotenv').config();
+require('./babel.config');
+// require('babel-register')({
+//     ignore: /\.sass/
+// });
 // require('babel-register')({
 //     'plugins': [
 //         [
@@ -20,5 +22,7 @@ require('babel-register')({
 // register(['css', 'sass']);
 // ['.css', '.less', '.sass', '.ttf', '.woff', '.woff2'].forEach((ext) => require.extensions[ext] = () => {});
 
-import 'babel-polyfill';
-import './src/server';
+// import 'babel-polyfill';
+// import './src/server';
+
+require('./config');

@@ -14,28 +14,25 @@ config.output.publicPath = `http://${devServerHost}:${devServerPort}${publicPath
 
 config.devtool = 'inline-source-map';
 
-config.module.rules.push({
-    test: regularExpressions.javascript,
-    use: [
-        {
-            loader: 'react-hot-loader' 
-        },
-        {
-            loader: 'babel-loader',
-            options: {
-                presets: [
-                    'react',
-                    'es2015',
-                    'stage-3',
-                    'stage-0'
-                ]
-            }
-        },
-        {
-            loader: 'eslint-loader'
-        }
-    ],
-    exclude: [/node_modules/, /public/]
+// config.module.rules.push(
+//     {
+//         test: regularExpressions.css,
+//         use: 'null-loader'
+//     },
+//     {
+//         test: regularExpressions.sass,
+//         use: 'null-loader'
+//     },
+// );
+
+const jsLoader = config.module.rules.find(loader => loader.test.toString() === regularExpressions.javascript.toString());
+
+jsLoader.use.push({
+    loader: 'eslint-loader',
+});
+
+jsLoader.use.unshift({
+    loader: 'react-hot-loader',
 });
 
 config.plugins = config.plugins.concat(
@@ -49,18 +46,18 @@ config.plugins = config.plugins.concat(
         __PRODUCTION__: false,
         __DEVELOPMENT__: true,
         __DEVTOOLS__: false
-    }),
-    new webpack.optimize.UglifyJsPlugin({
-        compress: {
-            warnings: false
-        }
-    }),
+    })
+    // new webpack.optimize.UglifyJsPlugin({
+    //     compress: {
+    //         warnings: false
+    //     }
+    // }),
 
-    new webpack.optimize.CommonsChunkPlugin({
-        name: 'common'
-    }),
+    // new webpack.optimize.CommonsChunkPlugin({
+    //     name: 'common'
+    // }),
 
-    new webpack.optimize.OccurrenceOrderPlugin()
+    // new webpack.optimize.OccurrenceOrderPlugin()
     // new webpack.optimize.CommonsChunkPlugin({
     //     names: ['global', 'vendor'],
     //     children: true,

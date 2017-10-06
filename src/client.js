@@ -2,19 +2,20 @@
 
 import React from 'react';
 import { render } from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { Router } from 'react-router-dom';
 // import { AppContainer } from 'react-hot-loader';
 import createHistory from 'history/createBrowserHistory';
 
+require('babel-runtime/core-js/promise').default = require('bluebird');
 // require('react-hot-loader/patch');
 // require('babel-runtime/core-js/promise').default = require('bluebird');
 
 import App from './components/App';
 
 render (
-    <BrowserRouter history={createHistory()}>
+    <Router history={createHistory()}>
         <App />
-    </BrowserRouter>,
+    </Router>,
     document.getElementById('app')
 );
 // render (

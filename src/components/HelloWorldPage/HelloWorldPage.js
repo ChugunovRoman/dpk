@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 // }
 
-import './HelloWorldPage.sass';
+import s from './HelloWorldPage.sass';
 
 
 const propTypes = {
@@ -58,7 +58,7 @@ class App extends Component {
 
     render() {
         return (
-            <div className='App'>
+            <div className={s.App}>
                 <h1>Hello World!</h1>
                 <div>
                     <p>Введите Ваше имя:</p>
@@ -74,4 +74,4 @@ App.propTypes = propTypes;
 App.defaultProps = defaultProps;
 
 export default App;
-// export default withStyles(style)(App);
+// export default withStyles(s)(App);

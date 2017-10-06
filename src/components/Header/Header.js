@@ -10,7 +10,7 @@ const Header = () => {
         <Navbar>
             <Navbar.Header>
                 <Navbar.Brand>
-                    <span>Hello World</span>
+                    <span>Demo</span>
                 </Navbar.Brand>
                 <Navbar.Toggle/>
             </Navbar.Header>

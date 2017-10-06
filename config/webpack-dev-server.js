@@ -21,7 +21,6 @@ const devServerOptions = {
     stats: {colors: true},
     historyApiFallback: true
 };
-
 const compiler = webpack(config);
 
 new WebpackDevServer(compiler, devServerOptions)
